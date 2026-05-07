@@ -6427,3 +6427,254 @@ package require Img
 # Printing not supported.
 # Printing not supported.
 # Printing not supported.
+do run_uart.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying C:/college/6th/projects/uart_controller/uart_controller.mpf
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:40:06 on May 07,2026
+# vlog -reportprogress 300 -sv -work work rtl/uart_pkg.sv rtl/uart_if.sv rtl/uart_regs.sv rtl/uart_fifo.sv rtl/uart_tx.sv rtl/uart_rx.sv rtl/uart_top.sv 
+# -- Compiling package uart_pkg
+# -- Compiling interface uart_if
+# -- Compiling module uart_regs
+# -- Compiling module uart_fifo
+# -- Compiling package uart_tx_sv_unit
+# -- Importing package uart_pkg
+# -- Compiling module uart_tx
+# -- Compiling package uart_rx_sv_unit
+# -- Importing package uart_pkg
+# -- Compiling module uart_rx
+# -- Compiling module uart_top
+# 
+# Top level modules:
+# 	uart_top
+# End time: 19:40:06 on May 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:40:06 on May 07,2026
+# vlog -reportprogress 300 -sv -work work "+incdir+C:/uvm-1.1d/src" "+define+UVM_CMDLINE_NO_DPI" "+define+UVM_NO_DPI" "+define+UVM_NO_RELNOTES" C:/uvm-1.1d/src/uvm_pkg.sv verif/uart_verif_pkg.sv tb/uart_tb_top.sv 
+# -- Compiling package uvm_pkg
+# ** Warning: C:/uvm-1.1d/src/seq/uvm_sequencer_base.svh(1474): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# ** Warning: C:/uvm-1.1d/src/reg/uvm_mem_mam.svh(717): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# ** Warning: C:/uvm-1.1d/src/seq/uvm_sequence_library.svh(830): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# -- Compiling package uart_verif_pkg
+# -- Importing package uvm_pkg
+# -- Importing package uart_pkg
+# -- Compiling package uart_tb_top_sv_unit
+# -- Importing package uvm_pkg
+# -- Importing package uart_pkg
+# -- Importing package uart_verif_pkg
+# -- Compiling module uart_tb_top
+# 
+# Top level modules:
+# 	uart_tb_top
+# End time: 19:40:11 on May 07,2026, Elapsed time: 0:00:05
+# Errors: 0, Warnings: 3
+# End time: 19:40:16 on May 07,2026, Elapsed time: 0:54:05
+# Errors: 0, Warnings: 2
+# vsim -sv_seed random -L work "+UVM_TESTNAME=uart_test" "+UVM_VERBOSITY=UVM_LOW" work.uart_tb_top 
+# Start time: 19:40:17 on May 07,2026
+# Loading C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_27836\win32pe_gcc-4.2.1\export_tramp.dll
+# ** Note: (vsim-8785) UVM-aware debugging capabilities will be disabled since no compiled "questa_uvm_pkg" can be found.
+# This also means that later if you turn on UVM-aware debugging your debug simulations may have
+# different random seeds from your non-debug simulations.
+# Loading sv_std.std
+# Loading work.uart_if
+# Loading work.uart_pkg
+# Loading work.uvm_pkg
+# Loading work.uart_verif_pkg
+# Loading work.uart_tb_top_sv_unit
+# Loading work.uart_tb_top
+# Loading work.uart_top
+# Loading work.uart_fifo
+# Loading work.uart_regs
+# Loading work.uart_rx_sv_unit
+# Loading work.uart_rx
+# Loading work.uart_tx_sv_unit
+# Loading work.uart_tx
+# Compiling C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_27836\win32pe_gcc-4.2.1\exportwrapper.c
+# Loading C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_27836\win32pe_gcc-4.2.1\vsim_auto_compile.dll
+# ** Warning: Design size of 66565 statements exceeds ModelSim-Intel FPGA Starter Edition recommended capacity.
+# Expect performance to be adversely affected.
+# Sv_Seed = 146301597
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_root.svh(476) @ 0: reporter [UVM/RELNOTES] 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   This implementation of the UVM Library deviates from the 1800.2-2020
+#   standard.  See the DEVIATIONS.md file contained in the release
+#   for more details.
+# 
+# ----------------------------------------------------------------
+# Accellera:1800.2:UVM:2020.3.1
+# 
+# All copyright owners for this kit are listed in NOTICE.txt
+# All Rights Reserved Worldwide
+# ----------------------------------------------------------------
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_WARNING C:/uvm-1.1d/src/base/uvm_root.svh(549) @ 0: reporter [NO_DPI_USED] We are thinking of removing support for UVM_NO_DPI.  Please try this test without it and evaluate the impact
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_root.svh(552) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+# UVM_INFO @ 0: reporter [RNTST] Running test uart_test...
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_traversal.svh(345) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+# UVM_WARNING C:/uvm-1.1d/src/base/uvm_traversal.svh(314) @ 0: reporter [NO_VISIT_CHECK] Because UVM_REGEX_NO_DPI is defined, no uvm component name constraints will be checked
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 1685: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 5225: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 8765: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(58) @ 1007395: uvm_test_top.env.scoreboard [SCOREBOARD] === FINAL SCORE: 3 PASS / 0 FAIL ===
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_report_server.svh(1009) @ 1007395: reporter [UVM/REPORT/SERVER] 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :    8
+# UVM_WARNING :    2
+# UVM_ERROR :    0
+# UVM_FATAL :    0
+# ** Report counts by id
+# [MATCH]     3
+# [NO_DPI_TSTNAME]     1
+# [NO_DPI_USED]     1
+# [NO_VISIT_CHECK]     1
+# [RNTST]     1
+# [SCOREBOARD]     1
+# [UVM/COMP/NAMECHECK]     1
+# [UVM/RELNOTES]     1
+# 
+# ** Note: $finish    : C:/uvm-1.1d/src/base/uvm_root.svh(633)
+#    Time: 1007395 ps  Iteration: 63  Instance: /uart_tb_top
+# 1
+# Break in Task uvm_pkg/uvm_root::run_test at C:/uvm-1.1d/src/base/uvm_root.svh line 633
+# === DONE === check transcript for UVM_ERROR / MATCH messages
+# Can't move the Now cursor.
+do run_uart.do
+# ** Warning: (vlib-34) Library already exists at "work".
+# Model Technology ModelSim - Intel FPGA Edition vmap 2020.1 Lib Mapping Utility 2020.02 Feb 28 2020
+# vmap work work 
+# Modifying C:/college/6th/projects/uart_controller/uart_controller.mpf
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:44:24 on May 07,2026
+# vlog -reportprogress 300 -sv -work work rtl/uart_pkg.sv rtl/uart_if.sv rtl/uart_regs.sv rtl/uart_fifo.sv rtl/uart_tx.sv rtl/uart_rx.sv rtl/uart_top.sv 
+# -- Compiling package uart_pkg
+# -- Compiling interface uart_if
+# -- Compiling module uart_regs
+# -- Compiling module uart_fifo
+# -- Compiling package uart_tx_sv_unit
+# -- Importing package uart_pkg
+# -- Compiling module uart_tx
+# -- Compiling package uart_rx_sv_unit
+# -- Importing package uart_pkg
+# -- Compiling module uart_rx
+# -- Compiling module uart_top
+# 
+# Top level modules:
+# 	uart_top
+# End time: 19:44:24 on May 07,2026, Elapsed time: 0:00:00
+# Errors: 0, Warnings: 0
+# Model Technology ModelSim - Intel FPGA Edition vlog 2020.1 Compiler 2020.02 Feb 28 2020
+# Start time: 19:44:24 on May 07,2026
+# vlog -reportprogress 300 -sv -work work "+incdir+C:/uvm-1.1d/src" "+define+UVM_CMDLINE_NO_DPI" "+define+UVM_NO_DPI" "+define+UVM_NO_RELNOTES" C:/uvm-1.1d/src/uvm_pkg.sv verif/uart_verif_pkg.sv tb/uart_tb_top.sv 
+# -- Compiling package uvm_pkg
+# ** Warning: C:/uvm-1.1d/src/seq/uvm_sequencer_base.svh(1474): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# ** Warning: C:/uvm-1.1d/src/reg/uvm_mem_mam.svh(717): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# ** Warning: C:/uvm-1.1d/src/seq/uvm_sequence_library.svh(830): (vlog-2186) SystemVerilog testbench feature
+# (randomization, coverage or assertion) detected in the design.
+# These features are only supported in Questasim.
+# -- Compiling package uart_verif_pkg
+# -- Importing package uvm_pkg
+# -- Importing package uart_pkg
+# -- Compiling package uart_tb_top_sv_unit
+# -- Importing package uvm_pkg
+# -- Importing package uart_pkg
+# -- Importing package uart_verif_pkg
+# -- Compiling module uart_tb_top
+# 
+# Top level modules:
+# 	uart_tb_top
+# End time: 19:44:26 on May 07,2026, Elapsed time: 0:00:02
+# Errors: 0, Warnings: 3
+# End time: 19:44:31 on May 07,2026, Elapsed time: 0:04:14
+# Errors: 0, Warnings: 2
+# vsim -sv_seed random -L work "+UVM_TESTNAME=uart_test" "+UVM_VERBOSITY=UVM_LOW" work.uart_tb_top 
+# Start time: 19:44:31 on May 07,2026
+# Loading C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_39708\win32pe_gcc-4.2.1\export_tramp.dll
+# ** Note: (vsim-8785) UVM-aware debugging capabilities will be disabled since no compiled "questa_uvm_pkg" can be found.
+# This also means that later if you turn on UVM-aware debugging your debug simulations may have
+# different random seeds from your non-debug simulations.
+# Loading sv_std.std
+# Loading work.uart_if
+# Loading work.uart_pkg
+# Loading work.uvm_pkg
+# Loading work.uart_verif_pkg
+# Loading work.uart_tb_top_sv_unit
+# Loading work.uart_tb_top
+# Loading work.uart_top
+# Loading work.uart_fifo
+# Loading work.uart_regs
+# Loading work.uart_rx_sv_unit
+# Loading work.uart_rx
+# Loading work.uart_tx_sv_unit
+# Loading work.uart_tx
+# Compiling C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_39708\win32pe_gcc-4.2.1\exportwrapper.c
+# Loading C:/Users/AHMED/AppData/Local/Temp\ahmed sameh@LAPTOP-3L534N22_dpi_39708\win32pe_gcc-4.2.1\vsim_auto_compile.dll
+# ** Warning: Design size of 66565 statements exceeds ModelSim-Intel FPGA Starter Edition recommended capacity.
+# Expect performance to be adversely affected.
+# Sv_Seed = 1519957757
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_root.svh(476) @ 0: reporter [UVM/RELNOTES] 
+#   ***********       IMPORTANT RELEASE NOTES         ************
+# 
+#   This implementation of the UVM Library deviates from the 1800.2-2020
+#   standard.  See the DEVIATIONS.md file contained in the release
+#   for more details.
+# 
+# ----------------------------------------------------------------
+# Accellera:1800.2:UVM:2020.3.1
+# 
+# All copyright owners for this kit are listed in NOTICE.txt
+# All Rights Reserved Worldwide
+# ----------------------------------------------------------------
+# 
+#       (Specify +UVM_NO_RELNOTES to turn off this notice)
+# 
+# UVM_WARNING C:/uvm-1.1d/src/base/uvm_root.svh(549) @ 0: reporter [NO_DPI_USED] We are thinking of removing support for UVM_NO_DPI.  Please try this test without it and evaluate the impact
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_root.svh(552) @ 0: reporter [NO_DPI_TSTNAME] UVM_NO_DPI defined--getting UVM_TESTNAME directly, without DPI
+# UVM_INFO @ 0: reporter [RNTST] Running test uart_test...
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_traversal.svh(345) @ 0: reporter [UVM/COMP/NAMECHECK] This implementation of the component name checks requires DPI to be enabled
+# UVM_WARNING C:/uvm-1.1d/src/base/uvm_traversal.svh(314) @ 0: reporter [NO_VISIT_CHECK] Because UVM_REGEX_NO_DPI is defined, no uvm component name constraints will be checked
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 1685: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 5225: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(50) @ 8765: uvm_test_top.env.scoreboard [MATCH] PASS — data=0xa5 parity_en=1 data_bits=11 stop_bits=0
+# UVM_INFO verif/uart_scoreboard.sv(58) @ 1007395: uvm_test_top.env.scoreboard [SCOREBOARD] === FINAL SCORE: 3 PASS / 0 FAIL ===
+# UVM_INFO C:/uvm-1.1d/src/base/uvm_report_server.svh(1009) @ 1007395: reporter [UVM/REPORT/SERVER] 
+# --- UVM Report Summary ---
+# 
+# ** Report counts by severity
+# UVM_INFO :    8
+# UVM_WARNING :    2
+# UVM_ERROR :    0
+# UVM_FATAL :    0
+# ** Report counts by id
+# [MATCH]     3
+# [NO_DPI_TSTNAME]     1
+# [NO_DPI_USED]     1
+# [NO_VISIT_CHECK]     1
+# [RNTST]     1
+# [SCOREBOARD]     1
+# [UVM/COMP/NAMECHECK]     1
+# [UVM/RELNOTES]     1
+# 
+# ** Note: $finish    : C:/uvm-1.1d/src/base/uvm_root.svh(633)
+#    Time: 1007395 ps  Iteration: 63  Instance: /uart_tb_top
+# 1
+# Break in Task uvm_pkg/uvm_root::run_test at C:/uvm-1.1d/src/base/uvm_root.svh line 633
+# === DONE === check transcript for UVM_ERROR / MATCH messages

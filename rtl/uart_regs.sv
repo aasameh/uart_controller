@@ -67,7 +67,7 @@ module uart_regs (
         // initialize on reset
         // 
     if (!rst_n) begin
-        lcr      <= 8'h03;
+      lcr      <= 8'h03;
       dll      <= 8'd0;
       dlh      <= 8'h00;
       divisor_reg <= 16'h0000;

@@ -28,14 +28,38 @@ module uart_top (
     logic parity_en;
     logic parity_type;
     logic stop_bits;
+    logic tx_start_tx;
+    logic thre_tx;
 
-    logic thr_full;
-    always_ff @(posedge clk or negedge rst_n) begin
-        if (!rst_n)        thr_full <= 1'b0;
-        else if (tx_start) thr_full <= 1'b1;
-        else if (tx_busy) thr_full <= 1'b0;
-    end
-    assign temt = ~tx_busy & ~thr_full;
+    logic [7:0] tx_fifo_dout;
+    logic [4:0] tx_fifo_count;
+    logic       tx_fifo_empty;
+    logic       tx_fifo_full;
+    logic       tx_fifo_push;
+    logic       tx_fifo_pop;
+    logic       tx_fifo_clear;
+    
+
+    assign tx_start_tx   = (!tx_busy) && (!tx_fifo_empty) && (divisor != 0);
+    assign tx_fifo_push  = tx_start;
+    assign tx_fifo_pop   = tx_start_tx;
+    assign tx_fifo_clear = 1'b0;
+
+    assign thre = tx_fifo_empty;
+    assign temt = tx_fifo_empty && !tx_busy;
+
+    uart_fifo tx_fifo (
+        .clk(clk),
+        .rst_n(rst_n),
+        .data_in(tx_data),
+        .push(tx_fifo_push),
+        .pop(tx_fifo_pop),
+        .clear(tx_fifo_clear),
+        .data_out(tx_fifo_dout),
+        .empty(tx_fifo_empty),
+        .full(tx_fifo_full),
+        .count(tx_fifo_count)
+    );
 
     uart_regs regs (
         .clk(clk),
@@ -86,11 +110,11 @@ module uart_top (
         .parity_type(parity_type),
         .stop_bits(stop_bits),
         // tx_data and tx_start would come from a higher-level module or testbench
-        .tx_data(tx_data),
-        .tx_start(tx_start),
+        .tx_data(tx_fifo_dout),
+        .tx_start(tx_start_tx),
         .tx_out(tx_out),
         .tx_busy(tx_busy),
-        .thre(thre)
+        .thre(thre_tx)
     );
 
 

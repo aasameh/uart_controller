@@ -14,6 +14,7 @@ vlog -sv -work work \
     rtl/uart_pkg.sv \
     rtl/uart_if.sv \
     rtl/uart_regs.sv \
+    rtl/uart_fifo.sv \
     rtl/uart_tx.sv \
     rtl/uart_rx.sv \
     rtl/uart_top.sv
@@ -75,6 +76,16 @@ add wave -radix bin  /uart_tb_top/dut/tx/state
 add wave -radix hex  /uart_tb_top/dut/tx/shift_reg
 add wave -radix dec  /uart_tb_top/dut/tx/bit_cnt
 add wave -radix dec  /uart_tb_top/dut/tx/baud_cnt
+
+add wave -divider "FIFO"
+add wave -radix hex /uart_tb_top/dut/tx_fifo/data_in
+add wave -radix bin /uart_tb_top/dut/tx_fifo/push
+add wave -radix bin /uart_tb_top/dut/tx_fifo/pop
+add wave -radix bin  /uart_tb_top/dut/tx_fifo/clear
+add wave -radix hex  /uart_tb_top/dut/tx_fifo/data_out
+add wave -radix bin  /uart_tb_top/dut/tx_fifo/empty
+add wave -radix bin  /uart_tb_top/dut/tx_fifo/full
+add wave -radix dec  /uart_tb_top/dut/tx_fifo/count
 
 # ============================================================
 # Run

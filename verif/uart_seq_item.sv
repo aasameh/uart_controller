@@ -29,3 +29,16 @@ class uart_tx_item extends uvm_sequence_item;
     super.new(name);
   endfunction
 endclass : uart_tx_item
+
+class uart_status_item extends uvm_sequence_item;
+  string      kind;
+  logic [2:0] addr;
+  logic [7:0] data;
+  logic       irq;
+
+  `uvm_object_utils(uart_status_item)
+
+  function new(string name = "uart_status_item");
+    super.new(name);
+  endfunction
+endclass : uart_status_item

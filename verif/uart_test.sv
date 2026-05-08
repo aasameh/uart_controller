@@ -13,12 +13,11 @@ class uart_test extends uvm_test;
     endfunction
 
     task run_phase(uvm_phase phase);
-        uart_sequence seq; // declaration FIRST before any statements
         super.run_phase(phase);
         phase.raise_objection(this);
-        seq = uart_sequence::type_id::create("seq");
-        seq.start(env.agent.sequencer);
-        #1000ns;
+
+        // Keep simulation alive long enough for the driver-managed tests to complete.
+        #1us;
         phase.drop_objection(this);
     endtask
 

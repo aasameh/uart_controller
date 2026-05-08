@@ -24,11 +24,20 @@ module uart_tb_top;
     .rdata      (uart_vif.rdata),
     .rx_in      (uart_vif.rx_in),
     .tx_out     (uart_vif.tx_out),
+    .dtr        (uart_vif.dtr),
+    .rts        (uart_vif.rts),
+    .out1       (uart_vif.out1),
+    .out2       (uart_vif.out2),
+    .cts_in     (uart_vif.cts_in),
+    .dsr_in     (uart_vif.dsr_in),
+    .ri_in      (uart_vif.ri_in),
+    .dcd_in     (uart_vif.dcd_in),
     .thre       (uart_vif.thre),
     .temt       (uart_vif.temt),
     .dr         (uart_vif.dr),
     .framing_err(uart_vif.framing_err),
     .parity_err (uart_vif.parity_err),
+    .irq        (uart_vif.irq),
     .break_int  (uart_vif.break_int)
   );
   
@@ -42,6 +51,13 @@ module uart_tb_top;
   assign uart_vif.tx_start = dut.tx_start;
   assign uart_vif.tx_data  = dut.tx_data;
   assign uart_vif.tx_busy  = dut.tx_busy;
+
+  initial begin
+    uart_vif.cts_in = 1'b0;
+    uart_vif.dsr_in = 1'b0;
+    uart_vif.ri_in  = 1'b0;
+    uart_vif.dcd_in = 1'b0;
+  end
 
 //   bind uart_top uart_assertions assertions_inst (
 //     .clk(clk), .rst_n(rst_n), .tx_out(tx_out),

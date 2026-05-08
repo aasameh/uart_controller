@@ -18,8 +18,10 @@ class uart_env extends uvm_env;
         super.connect_phase(phase);
         // Monitor -> scoreboard actual port
         agent.monitor.uart_ap.connect(scoreboard.actual_aie);
+        agent.monitor.status_ap.connect(scoreboard.actual_status_aie);
         // Driver -> scoreboard expected port
         agent.driver.drv_ap.connect(scoreboard.expected_aie);
+        agent.driver.status_ap.connect(scoreboard.expected_status_aie);
     endfunction
 
 endclass : uart_env

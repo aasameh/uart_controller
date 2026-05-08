@@ -20,6 +20,17 @@ interface uart_if (input logic clk, rst_n);
   logic        tx_busy;
   logic        temt;
   logic        rx_in;
+  logic        irq;
+
+  // Modem
+  logic        dtr;
+  logic        rts;
+  logic        out1;
+  logic        out2;
+  logic        cts_in;
+  logic        dsr_in;
+  logic        ri_in;
+  logic        dcd_in;
 
   // Status
   logic        dr;

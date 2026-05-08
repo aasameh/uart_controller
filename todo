@@ -1,0 +1,70 @@
+Milestone 1: Scope and Architecture
+[x] Lock UART feature scope: TX, RX, FIFOs, LCR, LSR, divisor, loopback
+[x] Add modem control/status support
+[] Add interrupt support
+[x] Decide what stays out of scope, if anything, besides Wishbone
+[] Write a short architecture note for the final report
+
+Milestone 2: Core Data Path
+[x] TX state machine
+[x] RX state machine
+[x] TX frame formatting: start, data, parity, stop
+[x] RX frame sampling and decode
+[x] Divisor-based baud timing
+[x] Loopback path
+
+Milestone 3: FIFO and Buffering
+[x] TX FIFO integration
+[x] RX FIFO integration
+[x] RX FIFO data+error packing
+[x] RX FIFO pop on read
+[x] FIFO clear support from FCR
+[x] Verify FIFO corner cases under stress
+
+Milestone 4: Register File / Control Plane
+
+[x] LCR support
+[x] FCR support
+[x] MCR loopback bit
+[x] LSR assembly
+[x] Divisor latch behavior
+[x] Add modem register bits beyond loopback
+[] Add interrupt-related registers and status
+
+Milestone 5: Interrupts
+[] Define interrupt sources and priority
+[] Implement IER
+[] Implement IIR
+[] Implement interrupt generation from RX/TX/status events
+[] Verify interrupt clear and reassert behavior
+[] Add interrupt-focused tests
+
+Milestone 6: Modem Support
+[x] Implement modem control outputs
+[x] Implement modem status inputs
+[x] Define loopback behavior for modem signals
+[x] Add modem status verification
+[x] Add modem-focused tests
+
+Milestone 7: Verification
+[x] Test 1: loopback TX->RX readback
+[x] Test 2: FIFO overrun
+[x] Test 3: framing error injection
+[] Add interrupt tests
+[x] Add modem tests
+[] Add regression-friendly test modes
+[] Collect final waveform evidence for all major features
+
+Milestone 8: Integration and Tapeout
+[] Run synthesis / OpenLane flow
+[] Check timing closure
+[] Check DRC
+[] Check LVS if applicable in your flow
+[] Package final RTL, testbench, and evidence
+
+Milestone 9: Final Deliverables
+[] Write final README
+[] Add waveform screenshots
+[] Add transcript excerpts
+[] Write final verification summary
+[] Prepare submission package

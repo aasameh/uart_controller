@@ -22,6 +22,9 @@ module uart_rx (
   logic [2:0]  bit_cnt;
   logic [3:0]  sample_cnt;
   logic        sample_tick;
+  logic        parity_err_lat;
+  logic        framing_err_lat;
+  logic        break_int_lat;
 
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) baud_cnt <= 0;
@@ -42,17 +45,23 @@ module uart_rx (
       bit_cnt     <= 3'b000;
       sample_cnt  <= 4'b0;
       shift_reg   <= 8'b0;
+      parity_err_lat  <= 1'b0;
+      framing_err_lat <= 1'b0;
+      break_int_lat   <= 1'b0;
     end else begin
+      dr          <= 1'b0;
+      framing_err <= 1'b0;
+      parity_err  <= 1'b0;
+      break_int   <= 1'b0;
       case (state)
 
         RX_IDLE: begin
           if (~rx_in) begin
             state       <= RX_START;
             sample_cnt  <= 0;
-            dr          <= 1'b0;
-            framing_err <= 1'b0;
-            parity_err  <= 1'b0;
-            break_int   <= 1'b0;
+            parity_err_lat  <= 1'b0;
+            framing_err_lat <= 1'b0;
+            break_int_lat   <= 1'b0;
           end
         end
 
@@ -83,7 +92,7 @@ module uart_rx (
               sample_cnt <= 0;
               shift_reg  <= {rx_in, shift_reg[7:1]};
               bit_cnt    <= bit_cnt + 1;
-              if (bit_cnt == data_bits + 3) begin
+              if (bit_cnt == data_bits + 4) begin
                 state   <= parity_en ? RX_PARITY : RX_STOP;
                 bit_cnt <= 3'b000;
               end
@@ -98,7 +107,7 @@ module uart_rx (
               sample_cnt <= 0;
               state      <= RX_STOP;
               if (rx_in != (parity_type ? ~^shift_reg : ^shift_reg))
-                parity_err <= 1'b1;
+                parity_err_lat <= 1'b1;
             end else
               sample_cnt <= sample_cnt + 1;
           end
@@ -110,11 +119,17 @@ module uart_rx (
               sample_cnt <= 0;
               dr         <= 1'b1;
               rx_data    <= shift_reg;
+              parity_err  <= parity_err_lat;
+              framing_err <= framing_err_lat;
+              break_int   <= break_int_lat;
               if (rx_in == 1'b0) begin
                 framing_err <= 1'b1;
                 if (shift_reg == 8'b0)
                   break_int <= 1'b1;
               end
+              parity_err_lat  <= 1'b0;
+              framing_err_lat <= 1'b0;
+              break_int_lat   <= 1'b0;
               if (!stop_bits || bit_cnt == 1) begin
                 state   <= RX_IDLE;
                 bit_cnt <= 3'b000;

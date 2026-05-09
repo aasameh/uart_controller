@@ -358,3 +358,5 @@ do run_uart.do
 # 1
 # Break in Task uvm_pkg/uvm_root::run_test at C:/uvm-1.1d/src/base/uvm_root.svh line 633
 # === DONE === check transcript for UVM_ERROR / MATCH messages
+# End time: 14:54:52 on May 09,2026, Elapsed time: 0:50:36
+# Errors: 0, Warnings: 2

@@ -7,7 +7,7 @@
 - **[VERIFICATION.md](VERIFICATION.md)** — Test methodology & UVM structure
 - **screenshots/** — Annotated test evidence & waveforms
 
-## Key Facts
+## Features
 
 | Feature               | Status                                 |
 | --------------------- | -------------------------------------- |
@@ -19,27 +19,5 @@
 | Interrupt Controller  | ✅ Working (IER/IIR + priority)         |
 | Loopback Mode         | ✅ Working (MCR[4]=1)                   |
 | External Modem Inputs | ✅ Stable (2-stage FF)                  |
-
-## Run Simulation
-
-```powershell
-cd c:\college\6th\projects\uart_controller
-C:\intelFPGA\20.1\modelsim_ase\win32aloem\vsim.exe -c -do run_uart.do
-```
-
-Or create an alias:
-```powershell
-Set-Alias vsim 'C:\intelFPGA\20.1\modelsim_ase\win32aloem\vsim.exe'
-vsim -c -do run_uart.do
-```
-
-## Next Steps
-
-1. **Synthesis** → Quartus/Vivado RTL → netlists
-2. **GDSII** → place & route
-3. **Validation** → timing analysis, power estimation
-4. **Documentation** → Add your annotated screenshots to `screenshots/`
-
----
 
 Generated: May 9, 2026

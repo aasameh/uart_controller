@@ -2,7 +2,7 @@
 
 ## Quick Links
 
-- **[TEST_RESULTS.md](TEST_RESULTS.md)** — Final simulation results (5/5 PASS)
+- **[TEST_RESULTS.md](TEST_RESULTS.md)** — Final simulation results
 - **[DESIGN.md](DESIGN.md)** — Register map, architecture, modem control
 - **[VERIFICATION.md](VERIFICATION.md)** — Test methodology & UVM structure
 - **screenshots/** — Annotated test evidence & waveforms

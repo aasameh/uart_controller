@@ -143,7 +143,6 @@ module uart_regs (
 
   // Write logic
     always_ff @(posedge clk or negedge rst_n) begin
-        // initialize on reset    
     if (!rst_n) begin
       lcr      <= 8'h03;
       dll      <= 8'd0;
@@ -161,8 +160,7 @@ module uart_regs (
       tx_fifo_clear <= 1'b0;
       rx_fifo_clear <= 1'b0;
     end else begin
-        // keep MSR sampling in a dedicated synchronous block (below)
-        tx_start <= 1'b0;  // default — pulse only on THR write
+        tx_start <= 1'b0;
         rx_fifo_pop   <= 1'b0;
         tx_fifo_clear <= 1'b0;
         rx_fifo_clear <= 1'b0;
@@ -207,7 +205,7 @@ module uart_regs (
         3'h2: rdata = {2'b11, 2'b00, int_id, ~int_pending}; // IIR
         3'h4: rdata = mcr_reg;
         3'h5: rdata = lsr;
-        // MSR format: [7]=DCD [6]=RI [5]=DSR [4]=CTS [3]=DDCD [2]=TERI [1]=DDSR [0]=DCTS
+        // MSR: [7]=DCD [6]=RI [5]=DSR [4]=CTS [3]=DDCD [2]=TERI [1]=DDSR [0]=DCTS
         3'h6: rdata = { msr_inputs[3], msr_inputs[2], msr_inputs[1], msr_inputs[0],
                         msr_delta[3],  msr_delta[2],  msr_delta[1],  msr_delta[0] };
         default: rdata = 8'h00;
@@ -222,9 +220,7 @@ module uart_regs (
       msr_prev   <= 4'b0;
       msr_delta  <= 4'b0;
     end else begin
-      // canonical order: {DCD, RI, DSR, CTS}
       new_inputs = {dcd_in, ri_in, dsr_in, cts_in};
-      // latch any edges until explicitly cleared by a read
       msr_delta <= msr_delta | (new_inputs ^ msr_prev);
       msr_prev  <= new_inputs;
       msr_inputs<= new_inputs;

@@ -1,0 +1,19 @@
+#!/usr/bin/env yosys
+
+# Read RTL files using read_systemverilog
+read_systemverilog rtl/uart_pkg.sv
+read_systemverilog rtl/uart_if.sv
+read_systemverilog rtl/uart_fifo.sv
+read_systemverilog rtl/uart_regs.sv
+read_systemverilog rtl/uart_tx.sv
+read_systemverilog rtl/uart_rx.sv
+read_systemverilog rtl/uart_top.sv
+
+# Synthesize for SKY130
+synth_sky130 -json uart.json
+
+# Output netlist
+write_verilog uart_synth.v
+
+# Exit
+exit

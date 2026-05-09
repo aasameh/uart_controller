@@ -138,68 +138,68 @@ class uart_driver extends uvm_driver #(uart_tx_item);
         reg_write(3'h3, 8'h0B); // DLAB=0, parity_en=1, odd, 8N1
 
         // Test 1: Single byte TX→RX→read
-        // `uvm_info("TEST_1", "Single byte TX with RBR read", UVM_LOW)
-        // repeat(5) begin
-        //     uart_tx_item item;
-        //     seq_item_port.get_next_item(item);
-        //     wait(uart_vif.temt === 1'b1);
-        //     configure(item);
-        //     repeat(2) @(posedge uart_vif.clk);
-        //     drv_ap.write(item);
-        //     reg_write(3'h0, item.data);
-        //     @(posedge uart_vif.clk);
-        //     wait(uart_vif.temt === 1'b1);
-        //     // Wait for RX to complete (dr should be high after loopback)
-        //     repeat(100) @(posedge uart_vif.clk);
-        //     if (uart_vif.dr) begin
-        //         rbr_read(rbr_data);
-        //         lsr_read(lsr_data);
-        //         if (rbr_data === item.data)
-        //             `uvm_info("PASS", $sformatf("RBR read OK: sent 0x%02X, got 0x%02X", item.data, rbr_data), UVM_LOW)
-        //         else
-        //             `uvm_error("FAIL", $sformatf("RBR mismatch: sent 0x%02X, got 0x%02X", item.data, rbr_data))
-        //     end
-        //     seq_item_port.item_done();
-        // end
+        `uvm_info("TEST_1", "Single byte TX with RBR read", UVM_LOW)
+        repeat(5) begin
+            uart_tx_item item;
+            seq_item_port.get_next_item(item);
+            wait(uart_vif.temt === 1'b1);
+            configure(item);
+            repeat(2) @(posedge uart_vif.clk);
+            drv_ap.write(item);
+            reg_write(3'h0, item.data);
+            @(posedge uart_vif.clk);
+            wait(uart_vif.temt === 1'b1);
+            // Wait for RX to complete (dr should be high after loopback)
+            repeat(100) @(posedge uart_vif.clk);
+            if (uart_vif.dr) begin
+                rbr_read(rbr_data);
+                lsr_read(lsr_data);
+                if (rbr_data === item.data)
+                    `uvm_info("PASS", $sformatf("RBR read OK: sent 0x%02X, got 0x%02X", item.data, rbr_data), UVM_LOW)
+                else
+                    `uvm_error("FAIL", $sformatf("RBR mismatch: sent 0x%02X, got 0x%02X", item.data, rbr_data))
+            end
+            seq_item_port.item_done();
+        end
 
         // Test 2: Burst 17 bytes to trigger OE
-        // `uvm_info("TEST_2", "Burst 17 bytes to trigger OE", UVM_LOW)
-        // for (int i = 0; i < 17; i++) begin
-        //     uart_tx_item exp_item;
-        //     exp_item = uart_tx_item::type_id::create($sformatf("exp_burst_%0d", i));
-        //     exp_item.data        = 8'hCC + i;
-        //     exp_item.parity_en   = 1'b1;
-        //     exp_item.parity_type = 1'b0;
-        //     exp_item.data_bits   = 2'b11;
-        //     exp_item.stop_bits   = 1'b0;
-        //     drv_ap.write(exp_item);
-        //     wait(uart_vif.temt === 1'b1);
-        //     reg_write(3'h0, 8'hCC + i);
-        //     repeat(10) @(posedge uart_vif.clk);
-        // end
+        `uvm_info("TEST_2", "Burst 17 bytes to trigger OE", UVM_LOW)
+        for (int i = 0; i < 17; i++) begin
+            uart_tx_item exp_item;
+            exp_item = uart_tx_item::type_id::create($sformatf("exp_burst_%0d", i));
+            exp_item.data        = 8'hCC + i;
+            exp_item.parity_en   = 1'b1;
+            exp_item.parity_type = 1'b0;
+            exp_item.data_bits   = 2'b11;
+            exp_item.stop_bits   = 1'b0;
+            drv_ap.write(exp_item);
+            wait(uart_vif.temt === 1'b1);
+            reg_write(3'h0, 8'hCC + i);
+            repeat(10) @(posedge uart_vif.clk);
+        end
 
-        // // Test 3: Isolated framing-error case (bad stop bit)
-        // `uvm_info("TEST_3", "Inject bad-stop RX frame to trigger FE", UVM_LOW)
+        // Test 3: Isolated framing-error case (bad stop bit)
+        `uvm_info("TEST_3", "Inject bad-stop RX frame to trigger FE", UVM_LOW)
 
-        // // Make sure loopback is off so this test is isolated to rx_in.
-        // reg_write(3'h4, 8'h00); // MCR: loopback off
-        // reg_write(3'h3, 8'h03); // LCR: 8N1, parity off, DLAB=0
+        // Make sure loopback is off so this test is isolated to rx_in.
+        reg_write(3'h4, 8'h00); // MCR: loopback off
+        reg_write(3'h3, 8'h03); // LCR: 8N1, parity off, DLAB=0
 
-        // drive_rx_bad_stop_frame(8'h55);
+        drive_rx_bad_stop_frame(8'h55);
 
-        // // Allow RX pipeline/FIFO push to settle
-        // repeat(40) @(posedge uart_vif.clk);
+        // Allow RX pipeline/FIFO push to settle
+        repeat(40) @(posedge uart_vif.clk);
 
-        // lsr_read(lsr_data);
-        // if (lsr_data[3])
-        //     `uvm_info("PASS", "Framing error bit set after bad-stop frame", UVM_LOW)
-        // else
-        //     `uvm_error("FAIL", "Framing error bit not set in LSR")
+        lsr_read(lsr_data);
+        if (lsr_data[3])
+            `uvm_info("PASS", "Framing error bit set after bad-stop frame", UVM_LOW)
+        else
+            `uvm_error("FAIL", "Framing error bit not set in LSR")
 
-        // if (uart_vif.dr) begin
-        //     rbr_read(rbr_data);
-        //     `uvm_info("TEST_3", $sformatf("RBR after FE frame = 0x%02X", rbr_data), UVM_LOW)
-        // end
+        if (uart_vif.dr) begin
+            rbr_read(rbr_data);
+            `uvm_info("TEST_3", $sformatf("RBR after FE frame = 0x%02X", rbr_data), UVM_LOW)
+        end
 
         // Test 4: Modem loopback + external status sampling
         `uvm_info("TEST_4", "Exercise modem loopback and external modem inputs", UVM_LOW)

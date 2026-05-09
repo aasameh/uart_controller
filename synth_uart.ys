@@ -1,0 +1,27 @@
+#!/usr/bin/env yosys
+# Synthesis script for UART controller
+
+read_verilog -sv synth_prep/uart_pkg_synth.sv
+read_verilog -sv synth_prep/uart_fifo_synth.sv
+read_verilog -sv synth_prep/uart_tx_synth.sv
+read_verilog -sv synth_prep/uart_rx_synth.sv
+read_verilog -sv synth_prep/uart_regs_synth.sv
+read_verilog -sv synth_prep/uart_if_synth.sv
+read_verilog -sv synth_prep/uart_top_synth.sv
+
+# Hierarchy and optimization
+hierarchy -top uart_top
+proc
+flatten
+opt
+
+# Technology mapping for generic library
+techmap
+opt
+
+# Write outputs
+write_verilog uart_synth.v
+write_json uart_synth.json
+
+# Report
+stat

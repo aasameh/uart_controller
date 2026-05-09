@@ -1,0 +1,14 @@
+{
+    "DESIGN_NAME": "uart_top",
+    "VERILOG_FILES": "/work/uart_sky130.v",
+    "CLOCK_PORT": "clk",
+    "CLOCK_PERIOD": 20,
+    "PDK": "sky130A",
+    "STD_CELL_LIBRARY": "sky130_fd_sc_hd",
+    "DESIGN_IS_CORE": true,
+    "FP_SIZING": "relative",
+    "FP_CORE_UTIL": 45,
+    "PL_TARGET_DENSITY": 0.5,
+    "RUN_LINTER": false,
+    "SYNTH_READ_BLACKBOX_LIB": true
+}

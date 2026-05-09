@@ -1,0 +1,1 @@
+lvs {/work/runs/uart_flow/results/signoff/uart_top.spice uart_top} {/work/runs/uart_flow/tmp/signoff/36-uart_top.pnl.v uart_top} /home/ahmed_sameh/.ciel/sky130A/libs.tech/netgen/sky130A_setup.tcl /work/runs/uart_flow/logs/signoff/39-uart_top.lef.lvs.log -json

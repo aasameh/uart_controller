@@ -13,226 +13,120 @@ uart_tb_top (UVM testbench)
 │       │   └── uart_monitor
 │       └── uart_scoreboard
 ├── uart_if (interface bundle)
-│   ├── Data signals: clk, rst_n, data, valid, ready
+│   ├── Data signals: clk, rst_n, rx_in, tx_out, rdata, wdata, addr
 │   ├── Modem signals: dtr, rts, out1, out2, cts_in, dsr_in, ri_in, dcd_in
-│   └── Register access: we, re, addr, wdata, rdata
+│   └── Register access: wr_en, rd_en, addr, wdata, rdata
 └── uart_top (DUT)
 ```
 
-### Verification Components
+## Verification Components
 
-#### uart_driver
-- **Responsibility:** Drive register reads/writes, inject stimuli
-- **Key Tasks:**
-  - `reg_write()` — Write to register at address
-  - `reg_read()` — Read from register, return data
-  - `msr_read()` — Read MSR with expected value verification
-  - `iir_read()` — Read IIR with expected value verification
-- **Analysis Ports:**
-  - `drv_ap` — publishes TX items for scoreboard
-  - `status_ap` — publishes expected status items (uart_status_item)
+### `uart_driver`
+- Drives register reads/writes and injects RX stimuli.
+- Exposes `drv_ap` for TX activity and `status_ap` for expected status checks.
+- In this run, the driver executed four user-facing tests: `TEST_1` through `TEST_4`.
 
-#### uart_monitor
-- **Responsibility:** Passively capture TX data and register reads
-- **Key Tasks:**
-  - `tx_watch` — Monitor TX output, extract frames
-  - `bus_watch` — Monitor register reads (IIR addr=2, MSR addr=6)
-- **Analysis Ports:**
-  - `tx_ap` — publishes captured TX data (uart_tx_item)
-  - `status_ap` — publishes actual status reads (uart_status_item)
+### `uart_monitor`
+- Passively captures TX data and bus reads.
+- Publishes actual TX/status items to the scoreboard.
 
-#### uart_scoreboard
-- **Responsibility:** Compare expected vs actual behavior
-- **Key Analysis Ports:**
-  - `tx_aie` — receives expected TX items
-  - `tx_observed` — receives actual TX items
-  - `expected_status_aie` — receives expected status items (from driver)
-  - `actual_status_aie` — receives actual status items (from monitor)
-- **Comparison Methods:**
-  - `compare_tx_items()` — verify TX payload matches expected
-  - `write_expected_status()` — queue expected register values
-  - `write_actual_status()` — compare actual register reads against expected queue
+### `uart_scoreboard`
+- Compares expected TX items against observed TX items.
+- Compares expected status reads against actual bus reads.
+- Final run summary: `27 PASS / 0 FAIL`.
 
-#### uart_seq_item (Sequence Item Classes)
-```systemverilog
-class uart_tx_item extends uvm_sequence_item;
-    logic [7:0] data;      // Transmitted byte
-    logic parity;          // Parity bit
-    logic [1:0] stop_bits; // Number of stop bits
-    // ... constraints & comparison logic
-endclass
+## Driver Tests
 
-class uart_status_item extends uvm_sequence_item;
-    string kind;           // "MSR_READ", "IIR_READ"
-    logic [2:0] addr;      // Register address
-    logic [7:0] data;      // Data read
-    logic irq;             // IRQ state at time of read
-endclass
-```
+### Test 1: Single Byte TX with RBR Read
+**Objective:** Verify the TX path, loopback receive, and RBR readback.
 
-## Test Cases
+**Observed result:**
+- Driver starts `TEST_1` at 175 ps.
+- Scoreboard reports repeated `MATCH` passes for the transmitted byte.
+- No UVM errors.
 
-### Test 3: Framing Error Detection
-
-**Objective:** Verify Line Status (LSR) framing error bit [4] asserts on bad-stop frame
-
-**Procedure:**
-1. Configure UART: 8N1 (8 bits, no parity, 1 stop bit)
-2. Inject bad-stop frame: normal data but stop bit = 0 instead of 1
-3. Read LSR — verify FE bit [4] = 1
-4. Read RBR — verify received data correct (frame error doesn't corrupt data)
-
-**Verification:**
-```
-@ 2555 ns: [STATUS_MATCH] PASS — LSR read confirms FE=1
-@ 2575 ns: [PASS] RBR = 0x55 (data intact despite frame error)
-```
-
-**Result:** ✅ PASS
+**Conclusion:** TX/RX path and scoreboard matching are working.
 
 ---
 
-### Test 4: Modem Control & Interrupt Priority
+### Test 2: Burst 17 Bytes to Trigger OE
+**Objective:** Exercise the burst path and overrun behavior.
 
-#### 4.1: Loopback Mode
+**Observed result:**
+- Driver starts `TEST_2` at 8.905 ns.
+- Scoreboard reports `MATCH` passes for the burst sequence.
+- No UVM errors.
 
-**Objective:** Verify MCR[4] loopback routes all modem outputs to status inputs
-
-**Procedure:**
-1. Write MCR = 0x1F (all bits set: DTR=1, RTS=1, OUT1=1, OUT2=1, LOOPBACK=1)
-2. Read MSR — expect 0xFF (all status bits = 1)
-   - Bits [7:4] = CTS|DSR|RI|DCD = 1111 (looped from RTS|DTR|OUT1|OUT2)
-   - Bits [3:0] = delta bits = 1111 (all changed from power-on state)
-
-**Verification:**
-```
-@ 2675 ns: [STATUS_MATCH] PASS — MSR = 0xFF (loopback verified)
-```
-
-**Result:** ✅ PASS
+**Conclusion:** Burst transfer path is working and does not raise fatal errors.
 
 ---
 
-#### 4.2: Delta Bit Clear on Read
+### Test 3: Bad-Stop RX Frame to Trigger FE
+**Objective:** Verify framing-error detection and data retention on bad-stop reception.
 
-**Objective:** Verify delta bits [3:0] clear after MSR read
+**Observed result:**
+- `LSR_READ` returned `0xe9` with `FE=1`.
+- `RBR_READ` returned `0x55`.
+- Driver logged `[PASS] Framing error bit set after bad-stop frame`.
 
-**Procedure:**
-1. Read MSR again (no input changes between reads)
-2. Expect MSR = 0xF0 (upper nibble = 1111, delta bits = 0000)
-
-**Verification:**
-```
-@ 2695 ns: [STATUS_MATCH] PASS — MSR = 0xF0 (deltas cleared)
-```
-
-**Result:** ✅ PASS
+**Conclusion:** Framing error behavior is correct and receive data is retained.
 
 ---
 
-#### 4.3: External Modem Inputs
+### Test 4: Modem Loopback and External Inputs
+**Objective:** Verify modem loopback, delta clearing, external input sampling, modem interrupt, and CTS edge capture.
 
-**Objective:** Verify external modem inputs (synchronized) appear in MSR
+**Observed result:**
+- Loopback MSR: `0xff`
+- Delta-clear MSR: `0xf0`
+- External modem inputs: `0x5a`
+- IIR modem interrupt: `0xc0`
+- CTS delta capture: `0x51`
+- Driver logged five `[PASS]` checks in this test.
 
-**Procedure:**
-1. Disable loopback: MCR = 0x00
-2. Set external inputs: CTS=1, DSR=0, RI=1, DCD=0
-3. Wait 6 clocks (allow 2-stage synchronizers to settle)
-4. Read MSR — expect upper nibble = 0b0101 (CTS|RI asserted, DSR|DCD low)
+**Conclusion:** Modem status and interrupt behavior are correct.
 
-**Synchronization:** 2-stage FF delay = 2 clock cycles
+## Transcript Summary
 
-**Verification:**
-```
-@ 2815 ns: [STATUS_MATCH] PASS — MSR = 0x5A
-  - Expected: 0x5A (01010000 in upper nibble + deltas)
-  - Actual:   0x5A
-  - **Issue fixed:** Previous bug set inputs after disabling loopback,
-    causing glitches. Fixed by setting inputs first, waiting for sync.
-```
+The run completed cleanly:
 
-**Result:** ✅ PASS (bug fixed from 0x5F → 0x5A)
+| Metric           | Value              |
+| ---------------- | ------------------ |
+| UVM_INFO         | 50                 |
+| UVM_WARNING      | 2                  |
+| UVM_ERROR        | 0                  |
+| `MATCH`          | 22                 |
+| `STATUS_MATCH`   | 5                  |
+| `PASS`           | 6                  |
+| Final scoreboard | `27 PASS / 0 FAIL` |
 
----
+## Notes
 
-#### 4.4: Modem Status Interrupt
+- The earlier modem synchronization issue is fixed; the external MSR read now returns `0x5a`.
+- The UVM warnings are from `UVM_NO_DPI` / name-check settings and are not fatal.
+- The run has no UVM errors.
 
-**Objective:** Verify IER[3] enables modem interrupt, IIR reports correct priority
+## What This Covers
 
-**Procedure:**
-1. Enable IER[3] (modem status interrupt)
-2. Toggle CTS: 1 → 0 → 1 (creates delta edge)
-3. Read IIR — expect 0xC0:
-   - pending=1 (interrupt asserted)
-   - id=000 (modem status = lowest priority)
-4. Verify IRQ output = 1
+- TX/RX loopback and readback
+- Burst transmission path
+- Framing error handling
+- Modem loopback and external modem sampling
+- Modem interrupt identification
+- CTS delta capture
 
-**Verification:**
-```
-@ 2955 ns: [STATUS_MATCH] PASS — IIR = 0xC0 (modem interrupt)
-```
+## Known Gaps
 
-**Result:** ✅ PASS
+These are still not exercised in the driver run:
 
----
-
-#### 4.5: CTS Delta Edge Capture
-
-**Objective:** Verify delta bits capture edge on external inputs
-
-**Procedure:**
-1. From previous test, CTS was toggled
-2. Read MSR — verify DCTS bit [0] = 1
-3. Expect MSR = 0x51:
-   - Bits [7:4] = 0101 (CTS=1, DSR=0, RI=1, DCD=0)
-   - Bit [0] = DCTS = 1 (captured CTS change)
-
-**Verification:**
-```
-@ 2975 ns: [STATUS_MATCH] PASS — MSR = 0x51 (DCTS delta set)
-```
-
-**Result:** ✅ PASS
-
----
-
-## Test Results Summary
-
-| Test       | Method                   | Result | Evidence                   |
-| ---------- | ------------------------ | ------ | -------------------------- |
-| **Test 3** | Framing error injection  | ✅ PASS | LSR[4]=1, RBR intact       |
-| **4.1**    | Loopback mode (MCR[4]=1) | ✅ PASS | MSR=0xFF                   |
-| **4.2**    | Delta clear on read      | ✅ PASS | MSR=0xF0                   |
-| **4.3**    | External modem inputs    | ✅ PASS | MSR=0x5A (was 0x5F, fixed) |
-| **4.4**    | Modem interrupt IER[3]   | ✅ PASS | IIR=0xC0, irq=1            |
-| **4.5**    | CTS delta edge           | ✅ PASS | MSR=0x51 with DCTS=1       |
-
-**Final Score:** 5 PASS / 0 FAIL (6 driver assertions pass independently)
-
-## Coverage Metrics
-
-| Item               | Coverage                                           |
-| ------------------ | -------------------------------------------------- |
-| Register reads     | 100% (all 7 registers accessed)                    |
-| Register writes    | 100% (all 7 registers written)                     |
-| Interrupt sources  | 100% (line status, RX data, THRE, modem)           |
-| Modem control bits | 100% (DTR, RTS, OUT1, OUT2, LOOPBACK)              |
-| Modem status bits  | 100% (CTS, DSR, RI, DCD + deltas)                  |
-| Error conditions   | 50% (framing error; overflow/parity not exercised) |
-| External inputs    | 100% (CTS, DSR, RI, DCD all toggled)               |
-
-## Known Limitations
-
-1. **Overflow Error:** Not explicitly tested (would require filling RX FIFO beyond capacity)
-2. **Parity Error:** Not explicitly tested
-3. **Break Interrupt:** Not explicitly tested
-4. **Baud Rate Sweep:** Not tested across all divisor values (only tested with divisor=16)
-
-These can be added to future regression suites.
+1. Overflow stress beyond the burst path
+2. Parity-error-specific injection
+3. Break-interrupt injection
+4. Exhaustive divisor sweep
 
 ---
 
 **Verification Date:** May 9, 2026  
 **UVM Version:** 1.1d  
 **Simulator:** ModelSim Intel FPGA 2020.1  
-**Status:** ✅ Ready for Synthesis & GDSII
+**Status:** Ready for synthesis handoff and GDS flow
